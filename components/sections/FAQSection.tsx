@@ -57,82 +57,90 @@ const FAQSection: React.FC<FAQSectionProps> = ({
   };
 
   return (
-    <div className="py-16 px-4 bg-gradient-to-b from-slate-50 to-white">
-      <div className="max-w-lg mx-auto">
+    <div className="bg-gradient-to-b from-black to-slate-900 py-20 px-6">
+      <div className="max-w-2xl mx-auto">
         {/* Section Label */}
-        <div className="flex items-center justify-center gap-2 mb-6">
-          <span className="w-8 h-[2px]" style={{ backgroundColor: secondaryColor }} />
+        <div className="text-center mb-12">
           <span
-            className="text-xs font-bold uppercase tracking-widest"
-            style={{ color: primaryColor }}
+            className="inline-block px-5 py-2 rounded-full text-sm font-bold tracking-wide mb-6"
+            style={{ backgroundColor: `${primaryColor}20`, color: primaryColor }}
           >
             FAQ
           </span>
-          <span className="w-8 h-[2px]" style={{ backgroundColor: secondaryColor }} />
+          <h2 className="text-3xl md:text-5xl font-black text-white leading-tight break-keep">
+            {title}
+          </h2>
         </div>
 
-        {/* Title */}
-        <h2 className="text-2xl md:text-3xl font-bold text-slate-900 text-center mb-8 break-keep leading-snug">
-          {title}
-        </h2>
-
         {/* FAQ Accordion */}
-        <div className="space-y-3">
-          {items.map((item) => (
+        <div className="space-y-4">
+          {items.map((item, idx) => (
             <div
               key={item.id}
-              className="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden transition-all duration-200"
+              className="bg-slate-800/50 rounded-3xl border border-slate-700/50 overflow-hidden transition-all duration-300"
               style={{
                 borderColor: openItemId === item.id ? primaryColor : undefined,
-                boxShadow: openItemId === item.id ? `0 4px 12px ${primaryColor}20` : undefined
+                boxShadow: openItemId === item.id ? `0 8px 32px ${primaryColor}30` : undefined
               }}
             >
               {/* Question */}
               <button
                 onClick={() => toggleItem(item.id)}
-                className="w-full px-5 py-4 flex items-center justify-between text-left"
+                className="w-full px-6 py-5 flex items-center justify-between text-left"
               >
-                {isEditable && editingItemId === item.id ? (
-                  <input
-                    type="text"
-                    value={item.question}
-                    onChange={(e) => handleQuestionEdit(item.id, e.target.value)}
-                    onBlur={() => setEditingItemId(null)}
-                    onClick={(e) => e.stopPropagation()}
-                    className="flex-1 text-slate-800 font-semibold text-sm bg-transparent border-b-2 border-dashed focus:outline-none"
-                    style={{ borderColor: primaryColor }}
-                    autoFocus
-                  />
-                ) : (
-                  <span
-                    className="flex-1 text-slate-800 font-semibold text-sm pr-4"
-                    onDoubleClick={() => isEditable && setEditingItemId(item.id)}
+                <div className="flex items-center gap-4">
+                  {/* Number Badge */}
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0 text-lg font-black"
+                    style={{
+                      backgroundColor: openItemId === item.id ? primaryColor : `${primaryColor}20`,
+                      color: openItemId === item.id ? 'white' : primaryColor
+                    }}
                   >
-                    {item.question}
-                  </span>
-                )}
-                <div className="flex items-center gap-2">
+                    {String(idx + 1).padStart(2, '0')}
+                  </div>
+                  {isEditable && editingItemId === item.id ? (
+                    <input
+                      type="text"
+                      value={item.question}
+                      onChange={(e) => handleQuestionEdit(item.id, e.target.value)}
+                      onBlur={() => setEditingItemId(null)}
+                      onClick={(e) => e.stopPropagation()}
+                      className="flex-1 text-white font-bold text-lg bg-transparent border-b-2 border-dashed focus:outline-none"
+                      style={{ borderColor: primaryColor }}
+                      autoFocus
+                    />
+                  ) : (
+                    <span
+                      className="flex-1 text-white font-bold text-lg"
+                      onDoubleClick={() => isEditable && setEditingItemId(item.id)}
+                    >
+                      {item.question}
+                    </span>
+                  )}
+                </div>
+                <div className="flex items-center gap-3">
                   {isEditable && (
                     <button
                       onClick={(e) => {
                         e.stopPropagation();
                         handleDeleteItem(item.id);
                       }}
-                      className="w-6 h-6 rounded-full bg-red-50 text-red-400 flex items-center justify-center hover:bg-red-100 transition-colors"
+                      className="w-8 h-8 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center hover:bg-red-500/30 transition-colors"
                     >
-                      <i className="fa-solid fa-times text-xs" />
+                      <i className="fa-solid fa-times text-sm" />
                     </button>
                   )}
                   <div
-                    className={`w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 ${
+                    className={`w-10 h-10 rounded-full flex items-center justify-center transition-all duration-300 ${
                       openItemId === item.id ? 'rotate-180' : ''
                     }`}
                     style={{
-                      backgroundColor: openItemId === item.id ? primaryColor : `${primaryColor}15`,
-                      color: openItemId === item.id ? 'white' : primaryColor
+                      backgroundColor: openItemId === item.id ? 'white' : `${primaryColor}20`,
+                      color: openItemId === item.id ? primaryColor : primaryColor
                     }}
                   >
-                    <i className="fa-solid fa-chevron-down text-xs" />
+                    <i className="fa-solid fa-chevron-down" />
                   </div>
                 </div>
               </button>
@@ -143,21 +151,21 @@ const FAQSection: React.FC<FAQSectionProps> = ({
                   openItemId === item.id ? 'max-h-96 opacity-100' : 'max-h-0 opacity-0'
                 }`}
               >
-                <div className="px-5 pb-5">
+                <div className="px-6 pb-6">
                   <div
-                    className="w-full h-[1px] mb-4"
-                    style={{ backgroundColor: `${primaryColor}20` }}
+                    className="w-full h-[1px] mb-5"
+                    style={{ backgroundColor: `${primaryColor}30` }}
                   />
                   {isEditable ? (
                     <textarea
                       value={item.answer}
                       onChange={(e) => handleAnswerEdit(item.id, e.target.value)}
-                      className="w-full text-slate-600 text-sm leading-relaxed bg-slate-50 rounded-lg p-3 border border-slate-200 focus:outline-none focus:border-opacity-50 resize-none"
+                      className="w-full text-slate-300 text-base leading-relaxed bg-slate-900/50 rounded-xl p-4 border border-slate-700 focus:outline-none focus:border-opacity-50 resize-none"
                       style={{ borderColor: primaryColor }}
                       rows={3}
                     />
                   ) : (
-                    <p className="text-slate-600 text-sm leading-relaxed">
+                    <p className="text-slate-300 text-base leading-relaxed pl-14">
                       {item.answer}
                     </p>
                   )}
@@ -171,7 +179,7 @@ const FAQSection: React.FC<FAQSectionProps> = ({
         {isEditable && (
           <button
             onClick={handleAddItem}
-            className="mt-4 w-full py-3 border-2 border-dashed rounded-xl text-sm font-medium transition-all hover:bg-slate-50"
+            className="mt-6 w-full py-4 border-2 border-dashed rounded-2xl text-base font-bold transition-all hover:bg-slate-800/50"
             style={{
               borderColor: `${primaryColor}50`,
               color: primaryColor
@@ -183,9 +191,14 @@ const FAQSection: React.FC<FAQSectionProps> = ({
         )}
 
         {/* Help Text */}
-        <p className="text-center text-xs text-slate-400 mt-6">
-          더 궁금한 점이 있으신가요? 고객센터로 문의해주세요.
-        </p>
+        <div className="text-center mt-10">
+          <div className="inline-flex items-center gap-3 px-6 py-3 bg-slate-800/50 rounded-full border border-slate-700/50">
+            <i className="fa-solid fa-headset text-slate-400" />
+            <span className="text-slate-400 text-sm">
+              더 궁금한 점이 있으신가요? <span className="text-white font-semibold">고객센터</span>로 문의해주세요
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

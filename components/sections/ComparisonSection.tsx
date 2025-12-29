@@ -34,19 +34,19 @@ const ComparisonSection: React.FC<ComparisonSectionProps> = ({
     if (typeof value === 'boolean') {
       return value ? (
         <div
-          className="w-8 h-8 rounded-full flex items-center justify-center mx-auto"
-          style={{ backgroundColor: isOurs ? primaryColor : '#E5E7EB' }}
+          className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto"
+          style={{ backgroundColor: isOurs ? primaryColor : '#374151' }}
         >
-          <i className={`fa-solid fa-check text-sm ${isOurs ? 'text-white' : 'text-slate-400'}`} />
+          <i className={`fa-solid fa-check text-lg ${isOurs ? 'text-white' : 'text-slate-500'}`} />
         </div>
       ) : (
-        <div className="w-8 h-8 rounded-full flex items-center justify-center mx-auto bg-slate-100">
-          <i className="fa-solid fa-xmark text-sm text-slate-400" />
+        <div className="w-12 h-12 rounded-2xl flex items-center justify-center mx-auto bg-slate-800">
+          <i className="fa-solid fa-xmark text-lg text-slate-600" />
         </div>
       );
     }
     return (
-      <span className={`text-sm ${isOurs ? 'font-semibold text-slate-800' : 'text-slate-500'}`}>
+      <span className={`text-base ${isOurs ? 'font-bold text-white' : 'text-slate-500'}`}>
         {value}
       </span>
     );
@@ -74,44 +74,48 @@ const ComparisonSection: React.FC<ComparisonSectionProps> = ({
   const toggleValue = (index: number, field: 'ourProduct' | 'competitor') => {
     if (!onUpdate || !isEditable) return;
     const currentValue = items[index][field];
-    // Toggle between true/false/string
     if (typeof currentValue === 'boolean') {
       handleItemUpdate(index, field, !currentValue);
     }
   };
 
+  const advantageCount = items.filter(item => {
+    const ourValue = item.ourProduct;
+    const theirValue = item.competitor;
+    if (typeof ourValue === 'boolean' && typeof theirValue === 'boolean') {
+      return ourValue && !theirValue;
+    }
+    return false;
+  }).length;
+
   return (
-    <div className="py-16 px-4 bg-gradient-to-b from-white to-slate-50">
-      <div className="max-w-lg mx-auto">
+    <div className="bg-gradient-to-b from-slate-900 to-black py-20 px-6">
+      <div className="max-w-2xl mx-auto">
         {/* Section Label */}
-        <div className="flex items-center justify-center gap-2 mb-6">
-          <span className="w-8 h-[2px]" style={{ backgroundColor: secondaryColor }} />
+        <div className="text-center mb-12">
           <span
-            className="text-xs font-bold uppercase tracking-widest"
-            style={{ color: primaryColor }}
+            className="inline-block px-5 py-2 rounded-full text-sm font-bold tracking-wide mb-6"
+            style={{ backgroundColor: `${primaryColor}20`, color: primaryColor }}
           >
-            Comparison
+            VS COMPARISON
           </span>
-          <span className="w-8 h-[2px]" style={{ backgroundColor: secondaryColor }} />
+          <h2 className="text-3xl md:text-5xl font-black text-white leading-tight break-keep">
+            {title}
+          </h2>
         </div>
 
-        {/* Title */}
-        <h2 className="text-2xl md:text-3xl font-bold text-slate-900 text-center mb-8 break-keep leading-snug">
-          {title}
-        </h2>
-
         {/* Comparison Table */}
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden border border-slate-100">
+        <div className="bg-slate-900/80 rounded-3xl overflow-hidden border border-slate-800">
           {/* Table Header */}
-          <div className="grid grid-cols-3 border-b border-slate-100">
-            <div className="p-4 text-center">
-              <span className="text-xs font-medium text-slate-400 uppercase tracking-wider">
+          <div className="grid grid-cols-3 border-b border-slate-800">
+            <div className="p-5 text-center border-r border-slate-800">
+              <span className="text-sm font-bold text-slate-500 uppercase tracking-wider">
                 기능
               </span>
             </div>
             <div
-              className="p-4 text-center"
-              style={{ backgroundColor: `${primaryColor}10` }}
+              className="p-5 text-center border-r border-slate-800"
+              style={{ backgroundColor: `${primaryColor}15` }}
             >
               {isEditable && editingField === 'ourProductName' ? (
                 <input
@@ -119,21 +123,21 @@ const ComparisonSection: React.FC<ComparisonSectionProps> = ({
                   value={ourProductName}
                   onChange={(e) => onUpdate?.({ ourProductName: e.target.value })}
                   onBlur={() => setEditingField(null)}
-                  className="text-sm font-bold text-center bg-transparent border-b-2 border-dashed focus:outline-none w-full"
+                  className="text-base font-black text-center bg-transparent border-b-2 border-dashed focus:outline-none w-full"
                   style={{ color: primaryColor, borderColor: primaryColor }}
                   autoFocus
                 />
               ) : (
                 <div
-                  className="flex flex-col items-center gap-1"
+                  className="flex flex-col items-center gap-2"
                   onDoubleClick={() => isEditable && setEditingField('ourProductName')}
                 >
                   <i
-                    className="fa-solid fa-crown text-sm"
+                    className="fa-solid fa-crown text-lg"
                     style={{ color: primaryColor }}
                   />
                   <span
-                    className="text-sm font-bold"
+                    className="text-base font-black"
                     style={{ color: primaryColor }}
                   >
                     {ourProductName}
@@ -141,19 +145,19 @@ const ComparisonSection: React.FC<ComparisonSectionProps> = ({
                 </div>
               )}
             </div>
-            <div className="p-4 text-center bg-slate-50">
+            <div className="p-5 text-center bg-slate-800/50">
               {isEditable && editingField === 'competitorName' ? (
                 <input
                   type="text"
                   value={competitorName}
                   onChange={(e) => onUpdate?.({ competitorName: e.target.value })}
                   onBlur={() => setEditingField(null)}
-                  className="text-sm font-medium text-slate-500 text-center bg-transparent border-b-2 border-dashed border-slate-300 focus:outline-none w-full"
+                  className="text-base font-medium text-slate-400 text-center bg-transparent border-b-2 border-dashed border-slate-600 focus:outline-none w-full"
                   autoFocus
                 />
               ) : (
                 <span
-                  className="text-sm font-medium text-slate-500"
+                  className="text-base font-medium text-slate-400"
                   onDoubleClick={() => isEditable && setEditingField('competitorName')}
                 >
                   {competitorName}
@@ -163,14 +167,14 @@ const ComparisonSection: React.FC<ComparisonSectionProps> = ({
           </div>
 
           {/* Table Body */}
-          <div className="divide-y divide-slate-100">
+          <div>
             {items.map((item, index) => (
               <div
                 key={index}
-                className="grid grid-cols-3 items-center hover:bg-slate-50 transition-colors"
+                className="grid grid-cols-3 items-center border-b border-slate-800 last:border-b-0 hover:bg-slate-800/30 transition-colors"
               >
                 {/* Feature Name */}
-                <div className="p-4">
+                <div className="p-5 border-r border-slate-800">
                   {isEditable && editingItemIndex === index && editingItemField === 'feature' ? (
                     <input
                       type="text"
@@ -180,14 +184,14 @@ const ComparisonSection: React.FC<ComparisonSectionProps> = ({
                         setEditingItemIndex(null);
                         setEditingItemField(null);
                       }}
-                      className="text-sm text-slate-700 bg-transparent border-b-2 border-dashed focus:outline-none w-full"
+                      className="text-base text-white bg-transparent border-b-2 border-dashed focus:outline-none w-full"
                       style={{ borderColor: primaryColor }}
                       autoFocus
                     />
                   ) : (
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-3">
                       <span
-                        className="text-sm text-slate-700 font-medium"
+                        className="text-base text-white font-semibold"
                         onDoubleClick={() => {
                           if (isEditable) {
                             setEditingItemIndex(index);
@@ -200,7 +204,7 @@ const ComparisonSection: React.FC<ComparisonSectionProps> = ({
                       {isEditable && (
                         <button
                           onClick={() => handleDeleteItem(index)}
-                          className="opacity-0 group-hover:opacity-100 w-5 h-5 rounded-full bg-red-50 text-red-400 flex items-center justify-center hover:bg-red-100 transition-all"
+                          className="opacity-0 group-hover:opacity-100 w-6 h-6 rounded-full bg-red-500/20 text-red-400 flex items-center justify-center hover:bg-red-500/30 transition-all"
                         >
                           <i className="fa-solid fa-times text-xs" />
                         </button>
@@ -211,8 +215,8 @@ const ComparisonSection: React.FC<ComparisonSectionProps> = ({
 
                 {/* Our Product Value */}
                 <div
-                  className="p-4 text-center cursor-pointer"
-                  style={{ backgroundColor: `${primaryColor}05` }}
+                  className="p-5 text-center cursor-pointer border-r border-slate-800"
+                  style={{ backgroundColor: `${primaryColor}08` }}
                   onClick={() => toggleValue(index, 'ourProduct')}
                 >
                   {renderValue(item.ourProduct, true)}
@@ -220,7 +224,7 @@ const ComparisonSection: React.FC<ComparisonSectionProps> = ({
 
                 {/* Competitor Value */}
                 <div
-                  className="p-4 text-center bg-slate-50/50 cursor-pointer"
+                  className="p-5 text-center bg-slate-800/30 cursor-pointer"
                   onClick={() => toggleValue(index, 'competitor')}
                 >
                   {renderValue(item.competitor, false)}
@@ -231,10 +235,10 @@ const ComparisonSection: React.FC<ComparisonSectionProps> = ({
 
           {/* Add Item Button */}
           {isEditable && (
-            <div className="p-4 border-t border-slate-100">
+            <div className="p-5 border-t border-slate-800">
               <button
                 onClick={handleAddItem}
-                className="w-full py-2 border-2 border-dashed rounded-lg text-sm font-medium transition-all hover:bg-slate-50"
+                className="w-full py-3 border-2 border-dashed rounded-xl text-base font-bold transition-all hover:bg-slate-800/50"
                 style={{
                   borderColor: `${primaryColor}50`,
                   color: primaryColor
@@ -249,29 +253,31 @@ const ComparisonSection: React.FC<ComparisonSectionProps> = ({
 
         {/* Summary Badge */}
         <div
-          className="mt-6 p-4 rounded-xl text-center"
-          style={{ backgroundColor: `${primaryColor}10` }}
+          className="mt-8 p-6 rounded-2xl text-center border"
+          style={{
+            backgroundColor: `${primaryColor}10`,
+            borderColor: `${primaryColor}30`
+          }}
         >
-          <div className="flex items-center justify-center gap-2 mb-2">
-            <i className="fa-solid fa-check-double" style={{ color: primaryColor }} />
-            <span className="font-bold text-slate-800">
-              {ourProductName}이 더 나은 이유
-            </span>
+          <div className="flex items-center justify-center gap-3 mb-3">
+            <div
+              className="w-12 h-12 rounded-xl flex items-center justify-center"
+              style={{ backgroundColor: primaryColor }}
+            >
+              <i className="fa-solid fa-trophy text-white text-xl" />
+            </div>
           </div>
-          <p className="text-sm text-slate-600">
-            {items.filter(item => {
-              const ourValue = item.ourProduct;
-              const theirValue = item.competitor;
-              if (typeof ourValue === 'boolean' && typeof theirValue === 'boolean') {
-                return ourValue && !theirValue;
-              }
-              return false;
-            }).length}개 항목에서 경쟁 제품 대비 우위
+          <h3 className="text-xl font-black text-white mb-2">
+            {ourProductName}이 더 나은 이유
+          </h3>
+          <p className="text-slate-400">
+            <span className="text-3xl font-black" style={{ color: primaryColor }}>{advantageCount}</span>
+            <span className="text-lg ml-2">개 항목에서 경쟁 제품 대비 우위</span>
           </p>
         </div>
 
         {/* Disclaimer */}
-        <p className="text-center text-xs text-slate-400 mt-4">
+        <p className="text-center text-sm text-slate-600 mt-6">
           * 2024년 기준 공개 사양 비교
         </p>
       </div>

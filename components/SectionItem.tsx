@@ -66,27 +66,27 @@ const SectionItem: React.FC<SectionItemProps> = ({
     }
   };
 
-  // 웰니스 스타일 Skeleton UI
+  // 나노바나나 스타일 Skeleton UI
   const SkeletonLoader = () => (
-    <div className="w-full aspect-[4/3] bg-gradient-to-br from-slate-50 to-slate-100 rounded-2xl flex flex-col items-center justify-center overflow-hidden relative">
+    <div className="w-full aspect-[4/3] bg-gradient-to-br from-slate-800 to-slate-900 rounded-2xl flex flex-col items-center justify-center overflow-hidden relative">
       {/* Shimmer Effect */}
-      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/60 to-transparent skeleton-shimmer" />
+      <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent skeleton-shimmer" />
 
       {/* Loading Content */}
       <div className="relative z-10 flex flex-col items-center gap-3">
-        <div className="w-14 h-14 rounded-full bg-white shadow-sm flex items-center justify-center">
-          <div className="w-8 h-8 rounded-full border-2 border-emerald-200 border-t-emerald-500 animate-spin" />
+        <div className="w-14 h-14 rounded-full bg-slate-700 shadow-sm flex items-center justify-center">
+          <div className="w-8 h-8 rounded-full border-2 border-slate-600 border-t-white animate-spin" />
         </div>
         <div className="text-center">
-          <p className="text-sm font-semibold text-slate-600">이미지 생성 중</p>
+          <p className="text-sm font-semibold text-white">이미지 생성 중</p>
           <p className="text-xs text-slate-400 mt-1">AI가 최적의 이미지를 만들고 있어요</p>
         </div>
       </div>
 
       {/* Skeleton Lines */}
       <div className="absolute bottom-4 left-4 right-4 space-y-2">
-        <div className="h-2 bg-slate-200/50 rounded-full w-3/4 animate-pulse" />
-        <div className="h-2 bg-slate-200/50 rounded-full w-1/2 animate-pulse" />
+        <div className="h-2 bg-slate-700/50 rounded-full w-3/4 animate-pulse" />
+        <div className="h-2 bg-slate-700/50 rounded-full w-1/2 animate-pulse" />
       </div>
 
       <style>{`
@@ -103,14 +103,14 @@ const SectionItem: React.FC<SectionItemProps> = ({
 
   // 에러 시 재시도 버튼
   const ErrorRetry = () => (
-    <div className="w-full aspect-[4/3] bg-slate-50 rounded-2xl flex flex-col items-center justify-center border-2 border-dashed border-slate-200">
-      <div className="w-12 h-12 rounded-full bg-red-50 flex items-center justify-center mb-3">
+    <div className="w-full aspect-[4/3] bg-slate-900 rounded-2xl flex flex-col items-center justify-center border-2 border-dashed border-slate-700">
+      <div className="w-12 h-12 rounded-full bg-red-900/50 flex items-center justify-center mb-3">
         <i className="fa-solid fa-exclamation-triangle text-red-400" />
       </div>
-      <p className="text-sm text-slate-500 mb-3">이미지 생성에 실패했어요</p>
+      <p className="text-sm text-slate-400 mb-3">이미지 생성에 실패했어요</p>
       <button
         onClick={handleGenerateImage}
-        className="px-4 py-2 bg-white border border-slate-200 rounded-lg text-sm font-medium text-slate-600 hover:bg-slate-50 transition-colors"
+        className="px-4 py-2 bg-slate-800 border border-slate-700 rounded-lg text-sm font-medium text-white hover:bg-slate-700 transition-colors"
       >
         <i className="fa-solid fa-rotate-right mr-2" />
         다시 시도
@@ -119,7 +119,7 @@ const SectionItem: React.FC<SectionItemProps> = ({
   );
 
   // 이미지 렌더링 (공통)
-  const renderImage = (aspectRatio: string = 'aspect-[4/3]') => {
+  const renderImage = (aspectRatio: string = 'aspect-[4/3]', rounded: string = 'rounded-2xl') => {
     if (loading) return <SkeletonLoader />;
     if (error) return <ErrorRetry />;
     if (imageUrl) {
@@ -127,7 +127,7 @@ const SectionItem: React.FC<SectionItemProps> = ({
         <img
           src={imageUrl}
           alt={section.title}
-          className={`w-full ${aspectRatio} object-cover rounded-2xl shadow-lg animate-fadeIn`}
+          className={`w-full ${aspectRatio} object-cover ${rounded} animate-fadeIn`}
         />
       );
     }
@@ -135,32 +135,54 @@ const SectionItem: React.FC<SectionItemProps> = ({
   };
 
   // ═══════════════════════════════════════════════════════════════
-  // 섹션별 렌더링 (모바일 퍼스트 + 웰니스 스타일)
+  // 나노바나나 스타일 섹션 렌더링 (다크모드 + 임팩트 있는 디자인)
   // ═══════════════════════════════════════════════════════════════
 
   const renderHero = () => (
-    <div className="min-h-[80vh] flex flex-col justify-center py-12 px-4">
-      {/* Hero Image */}
-      <div className="mb-8">
-        {renderImage('aspect-[16/10]')}
+    <div className="min-h-screen bg-black relative overflow-hidden">
+      {/* Background Image with Overlay */}
+      <div className="absolute inset-0">
+        {imageUrl ? (
+          <img
+            src={imageUrl}
+            alt={section.title}
+            className="w-full h-full object-cover opacity-60"
+          />
+        ) : (
+          <div className="w-full h-full bg-gradient-to-br from-slate-900 via-slate-800 to-black" />
+        )}
+        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/70 to-transparent" />
       </div>
 
       {/* Hero Content */}
-      <div className="text-center space-y-5">
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-black text-slate-900 leading-tight break-keep">
+      <div className="relative z-10 min-h-screen flex flex-col justify-end pb-20 px-6">
+        {/* Badge */}
+        <div className="mb-6">
+          <span
+            className="inline-block px-4 py-2 rounded-full text-sm font-bold tracking-wide"
+            style={{ backgroundColor: primaryColor, color: 'white' }}
+          >
+            BEST SELLER
+          </span>
+        </div>
+
+        {/* Main Title */}
+        <h1 className="text-4xl md:text-6xl lg:text-7xl font-black text-white leading-[1.1] mb-6 break-keep">
           {section.title}
         </h1>
-        <p className="text-base md:text-lg text-slate-600 leading-relaxed max-w-xl mx-auto">
+
+        {/* Description */}
+        <p className="text-lg md:text-xl text-slate-300 leading-relaxed max-w-xl mb-8">
           {section.content}
         </p>
 
-        {/* Sub Content as Tags */}
+        {/* Sub Content as Features */}
         {section.subContent && section.subContent.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-2 pt-2">
+          <div className="flex flex-wrap gap-3 mb-10">
             {section.subContent.slice(0, 3).map((item, idx) => (
               <span
                 key={idx}
-                className="px-3 py-1.5 bg-slate-100 text-slate-600 text-xs font-medium rounded-full"
+                className="px-4 py-2 bg-white/10 backdrop-blur-sm text-white text-sm font-medium rounded-full border border-white/20"
               >
                 {item}
               </span>
@@ -169,106 +191,121 @@ const SectionItem: React.FC<SectionItemProps> = ({
         )}
 
         {/* CTA Button */}
-        <div className="pt-6">
-          <button
-            className="w-full max-w-xs px-8 py-4 text-white font-bold rounded-xl transition-all hover:brightness-110 active:scale-[0.98] shadow-lg"
-            style={{ backgroundColor: primaryColor }}
-          >
-            지금 시작하기
-          </button>
-        </div>
+        <button
+          className="w-full max-w-md px-8 py-5 text-white font-black text-lg rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-2xl"
+          style={{ backgroundColor: primaryColor }}
+        >
+          지금 구매하기
+          <i className="fa-solid fa-arrow-right ml-3" />
+        </button>
       </div>
     </div>
   );
 
   const renderProblem = () => (
-    <div className="py-16 px-4 bg-gradient-to-b from-slate-50 to-white">
-      <div className="max-w-lg mx-auto">
+    <div className="bg-slate-900 py-20 px-6">
+      <div className="max-w-2xl mx-auto">
         {/* Section Label */}
-        <div className="flex items-center justify-center gap-2 mb-6">
-          <span className="w-8 h-[2px] bg-slate-300" />
-          <span className="text-xs font-bold text-slate-400 uppercase tracking-widest">Problem</span>
-          <span className="w-8 h-[2px] bg-slate-300" />
-        </div>
-
-        {/* Title */}
-        <h2 className="text-2xl md:text-3xl font-bold text-slate-900 text-center mb-6 break-keep leading-snug">
-          {section.title}
-        </h2>
-
-        {/* Pain Point Card */}
-        <div className="bg-white rounded-2xl p-6 shadow-sm border border-slate-100 mb-6">
-          <div className="flex items-start gap-3 mb-4">
-            <div
-              className="w-10 h-10 rounded-full flex items-center justify-center shrink-0"
-              style={{ backgroundColor: `${primaryColor}15` }}
-            >
-              <i className="fa-solid fa-face-frown" style={{ color: primaryColor }} />
-            </div>
-            <p className="text-slate-600 leading-relaxed italic">
-              "{section.content}"
-            </p>
+        <div className="flex items-center gap-3 mb-8">
+          <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center">
+            <i className="fa-solid fa-face-tired text-red-400 text-xl" />
           </div>
-
-          {/* Pain Points List */}
-          {section.subContent && section.subContent.length > 0 && (
-            <div className="space-y-3 pt-4 border-t border-slate-100">
-              {section.subContent.map((item, idx) => (
-                <div key={idx} className="flex items-start gap-3">
-                  <i className="fa-solid fa-xmark text-red-400 mt-1 text-sm" />
-                  <p className="text-sm text-slate-600">{item}</p>
-                </div>
-              ))}
-            </div>
-          )}
+          <span className="text-red-400 font-bold text-sm uppercase tracking-widest">PROBLEM</span>
         </div>
 
-        {/* Image */}
-        {renderImage()}
-      </div>
-    </div>
-  );
-
-  const renderSolution = () => (
-    <div className="py-16 px-4">
-      <div className="max-w-lg mx-auto">
-        {/* Section Label */}
-        <div className="flex items-center justify-center gap-2 mb-6">
-          <span className="w-8 h-[2px]" style={{ backgroundColor: secondaryColor }} />
-          <span className="text-xs font-bold uppercase tracking-widest" style={{ color: primaryColor }}>Solution</span>
-          <span className="w-8 h-[2px]" style={{ backgroundColor: secondaryColor }} />
-        </div>
-
-        {/* Title */}
-        <h2 className="text-2xl md:text-3xl font-bold text-slate-900 text-center mb-6 break-keep leading-snug">
+        {/* Big Impact Title */}
+        <h2 className="text-3xl md:text-5xl font-black text-white mb-8 leading-tight break-keep">
           {section.title}
         </h2>
 
-        {/* Image */}
-        <div className="mb-6">
-          {renderImage()}
+        {/* Quote Box */}
+        <div className="bg-slate-800/50 border-l-4 border-red-500 p-6 rounded-r-2xl mb-10">
+          <p className="text-xl md:text-2xl text-slate-300 font-medium italic leading-relaxed">
+            "{section.content}"
+          </p>
         </div>
 
-        {/* Content */}
-        <p className="text-slate-600 leading-relaxed text-center mb-8">
-          {section.content}
-        </p>
-
-        {/* Benefits List */}
+        {/* Pain Points - Big Cards */}
         {section.subContent && section.subContent.length > 0 && (
           <div className="space-y-4">
             {section.subContent.map((item, idx) => (
               <div
                 key={idx}
-                className="flex items-start gap-4 p-4 bg-white rounded-xl border border-slate-100 shadow-sm"
+                className="flex items-center gap-5 p-5 bg-slate-800/30 rounded-2xl border border-slate-700/50 hover:border-red-500/30 transition-colors"
               >
-                <div
-                  className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
-                  style={{ backgroundColor: `${primaryColor}15` }}
-                >
-                  <i className="fa-solid fa-check text-sm" style={{ color: primaryColor }} />
+                <div className="w-10 h-10 rounded-full bg-red-500/20 flex items-center justify-center shrink-0">
+                  <i className="fa-solid fa-xmark text-red-400" />
                 </div>
-                <p className="text-slate-700 font-medium text-sm leading-relaxed">{item}</p>
+                <p className="text-white font-medium text-lg">{item}</p>
+              </div>
+            ))}
+          </div>
+        )}
+
+        {/* Image */}
+        <div className="mt-12">
+          {renderImage('aspect-[16/10]', 'rounded-3xl')}
+        </div>
+      </div>
+    </div>
+  );
+
+  const renderSolution = () => (
+    <div className="bg-black py-20 px-6 relative overflow-hidden">
+      {/* Background Glow */}
+      <div
+        className="absolute top-0 left-1/2 -translate-x-1/2 w-[600px] h-[600px] rounded-full opacity-20 blur-[100px]"
+        style={{ backgroundColor: primaryColor }}
+      />
+
+      <div className="max-w-2xl mx-auto relative z-10">
+        {/* Section Label */}
+        <div className="flex items-center gap-3 mb-8">
+          <div
+            className="w-12 h-12 rounded-full flex items-center justify-center"
+            style={{ backgroundColor: `${primaryColor}30` }}
+          >
+            <i className="fa-solid fa-lightbulb text-xl" style={{ color: primaryColor }} />
+          </div>
+          <span className="font-bold text-sm uppercase tracking-widest" style={{ color: primaryColor }}>SOLUTION</span>
+        </div>
+
+        {/* Big Impact Title */}
+        <h2 className="text-3xl md:text-5xl font-black text-white mb-6 leading-tight break-keep">
+          {section.title}
+        </h2>
+
+        {/* Description */}
+        <p className="text-xl text-slate-400 leading-relaxed mb-12">
+          {section.content}
+        </p>
+
+        {/* Product Image - Big and Center */}
+        <div className="mb-12">
+          {renderImage('aspect-square', 'rounded-3xl')}
+        </div>
+
+        {/* Benefits List - Cards Style */}
+        {section.subContent && section.subContent.length > 0 && (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {section.subContent.map((item, idx) => (
+              <div
+                key={idx}
+                className="p-5 rounded-2xl border transition-all hover:scale-[1.02]"
+                style={{
+                  backgroundColor: `${primaryColor}10`,
+                  borderColor: `${primaryColor}30`
+                }}
+              >
+                <div className="flex items-start gap-4">
+                  <div
+                    className="w-10 h-10 rounded-xl flex items-center justify-center shrink-0"
+                    style={{ backgroundColor: primaryColor }}
+                  >
+                    <i className="fa-solid fa-check text-white" />
+                  </div>
+                  <p className="text-white font-semibold leading-relaxed">{item}</p>
+                </div>
               </div>
             ))}
           </div>
@@ -278,148 +315,163 @@ const SectionItem: React.FC<SectionItemProps> = ({
   );
 
   const renderFeatures = () => (
-    <div className="py-16 px-4 bg-gradient-to-b from-white to-slate-50">
-      <div className="max-w-lg mx-auto">
+    <div className="bg-gradient-to-b from-slate-900 to-black py-20 px-6">
+      <div className="max-w-2xl mx-auto">
         {/* Section Label */}
-        <div className="flex items-center justify-center gap-2 mb-6">
-          <span className="w-8 h-[2px] bg-emerald-200" />
-          <span className="text-xs font-bold text-emerald-600 uppercase tracking-widest">Features</span>
-          <span className="w-8 h-[2px] bg-emerald-200" />
+        <div className="text-center mb-12">
+          <span
+            className="inline-block px-5 py-2 rounded-full text-sm font-bold tracking-wide mb-6"
+            style={{ backgroundColor: `${secondaryColor}20`, color: secondaryColor }}
+          >
+            FEATURES
+          </span>
+          <h2 className="text-3xl md:text-5xl font-black text-white leading-tight break-keep">
+            {section.title}
+          </h2>
         </div>
 
-        {/* Title */}
-        <h2 className="text-2xl md:text-3xl font-bold text-slate-900 text-center mb-8 break-keep leading-snug">
-          {section.title}
-        </h2>
-
-        {/* Features Grid */}
+        {/* Features Grid - Big Impact Cards */}
         {section.subContent && section.subContent.length > 0 && (
-          <div className="grid grid-cols-1 gap-4 mb-8">
-            {section.subContent.map((item, idx) => (
-              <div
-                key={idx}
-                className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm hover:shadow-md transition-shadow"
-              >
-                <div className="flex items-center gap-4">
+          <div className="space-y-6 mb-12">
+            {section.subContent.map((item, idx) => {
+              const icons = ['fa-bolt', 'fa-shield-halved', 'fa-flask-vial', 'fa-award', 'fa-leaf'];
+              const colors = [primaryColor, secondaryColor, '#F59E0B', '#8B5CF6', '#10B981'];
+
+              return (
+                <div
+                  key={idx}
+                  className="relative p-6 bg-slate-800/50 rounded-3xl border border-slate-700/50 overflow-hidden group hover:border-slate-600 transition-all"
+                >
+                  {/* Number Badge */}
                   <div
-                    className="w-12 h-12 rounded-xl flex items-center justify-center"
-                    style={{ backgroundColor: `${primaryColor}10` }}
+                    className="absolute top-0 right-0 w-20 h-20 flex items-center justify-center text-6xl font-black opacity-10"
+                    style={{ color: colors[idx % colors.length] }}
                   >
-                    <i
-                      className={`fa-solid ${
-                        idx === 0 ? 'fa-award' :
-                        idx === 1 ? 'fa-shield-check' :
-                        idx === 2 ? 'fa-flask' :
-                        idx === 3 ? 'fa-certificate' : 'fa-star'
-                      } text-lg`}
-                      style={{ color: primaryColor }}
-                    />
+                    {String(idx + 1).padStart(2, '0')}
                   </div>
-                  <p className="text-slate-700 font-semibold text-sm flex-1">{item}</p>
+
+                  <div className="flex items-start gap-5">
+                    <div
+                      className="w-14 h-14 rounded-2xl flex items-center justify-center shrink-0"
+                      style={{ backgroundColor: `${colors[idx % colors.length]}20` }}
+                    >
+                      <i
+                        className={`fa-solid ${icons[idx % icons.length]} text-2xl`}
+                        style={{ color: colors[idx % colors.length] }}
+                      />
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-white font-bold text-xl leading-relaxed">{item}</p>
+                    </div>
+                  </div>
                 </div>
-              </div>
-            ))}
+              );
+            })}
           </div>
         )}
 
         {/* Content */}
-        <p className="text-slate-500 text-sm text-center leading-relaxed">
+        <p className="text-slate-400 text-center text-lg leading-relaxed mb-10">
           {section.content}
         </p>
 
         {/* Image */}
-        <div className="mt-8">
-          {renderImage()}
+        <div>
+          {renderImage('aspect-[16/9]', 'rounded-3xl')}
         </div>
       </div>
     </div>
   );
 
   const renderTrust = () => (
-    <div className="py-16 px-4">
-      <div className="max-w-lg mx-auto">
+    <div className="bg-slate-900 py-20 px-6 relative">
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-10 left-10 w-40 h-40 border-2 border-white rounded-full" />
+        <div className="absolute bottom-10 right-10 w-60 h-60 border-2 border-white rounded-full" />
+      </div>
+
+      <div className="max-w-2xl mx-auto relative z-10">
         {/* Section Label */}
-        <div className="flex items-center justify-center gap-2 mb-6">
-          <span className="w-8 h-[2px] bg-amber-200" />
-          <span className="text-xs font-bold text-amber-600 uppercase tracking-widest">Trust</span>
-          <span className="w-8 h-[2px] bg-amber-200" />
+        <div className="text-center mb-10">
+          <div className="flex items-center justify-center gap-1 mb-4">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <i key={star} className="fa-solid fa-star text-amber-400 text-2xl" />
+            ))}
+          </div>
+          <span className="text-amber-400 font-bold text-sm uppercase tracking-widest">TRUST</span>
         </div>
 
-        {/* Title */}
-        <h2 className="text-2xl md:text-3xl font-bold text-slate-900 text-center mb-8 break-keep leading-snug">
+        {/* Big Impact Title */}
+        <h2 className="text-3xl md:text-5xl font-black text-white text-center mb-8 leading-tight break-keep">
           {section.title}
         </h2>
 
-        {/* Trust Badge */}
-        <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-6 mb-6 border border-amber-100">
-          <div className="flex items-center justify-center gap-1 mb-4">
-            {[1, 2, 3, 4, 5].map((star) => (
-              <i key={star} className="fa-solid fa-star text-amber-400 text-lg" />
-            ))}
-          </div>
-          <p className="text-slate-700 text-center leading-relaxed">
-            {section.content}
+        {/* Big Trust Quote */}
+        <div className="bg-gradient-to-br from-amber-500/10 to-orange-500/10 rounded-3xl p-8 mb-10 border border-amber-500/20">
+          <p className="text-xl md:text-2xl text-white text-center leading-relaxed font-medium">
+            "{section.content}"
           </p>
         </div>
 
-        {/* Trust Items */}
+        {/* Trust Items - Badge Style */}
         {section.subContent && section.subContent.length > 0 && (
-          <div className="space-y-3">
+          <div className="grid grid-cols-2 gap-4">
             {section.subContent.map((item, idx) => (
               <div
                 key={idx}
-                className="flex items-center gap-3 p-4 bg-white rounded-xl border border-slate-100"
+                className="flex items-center gap-3 p-4 bg-slate-800/50 rounded-2xl border border-slate-700/50"
               >
-                <div className="w-8 h-8 rounded-full bg-emerald-100 flex items-center justify-center shrink-0">
-                  <i className="fa-solid fa-check text-emerald-600 text-xs" />
+                <div className="w-10 h-10 rounded-full bg-emerald-500/20 flex items-center justify-center shrink-0">
+                  <i className="fa-solid fa-circle-check text-emerald-400" />
                 </div>
-                <p className="text-slate-600 text-sm font-medium">{item}</p>
+                <p className="text-white font-medium text-sm">{item}</p>
               </div>
             ))}
           </div>
         )}
 
         {/* Image */}
-        <div className="mt-8">
-          {renderImage()}
+        <div className="mt-12">
+          {renderImage('aspect-[16/10]', 'rounded-3xl')}
         </div>
       </div>
     </div>
   );
 
   const renderCTA = () => (
-    <div
-      className="py-20 px-4"
-      style={{ backgroundColor: `${primaryColor}08` }}
-    >
-      <div className="max-w-lg mx-auto text-center">
-        {/* Icon */}
-        <div
-          className="w-16 h-16 rounded-2xl mx-auto mb-6 flex items-center justify-center shadow-lg"
-          style={{ backgroundColor: primaryColor }}
-        >
-          <i className="fa-solid fa-rocket text-white text-2xl" />
+    <div className="relative py-24 px-6 overflow-hidden" style={{ backgroundColor: primaryColor }}>
+      {/* Background Elements */}
+      <div className="absolute inset-0">
+        <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full -translate-x-1/2 -translate-y-1/2" />
+        <div className="absolute bottom-0 right-0 w-72 h-72 bg-black/10 rounded-full translate-x-1/3 translate-y-1/3" />
+      </div>
+
+      <div className="max-w-2xl mx-auto text-center relative z-10">
+        {/* Big Icon */}
+        <div className="w-24 h-24 rounded-3xl mx-auto mb-8 flex items-center justify-center bg-white/20 backdrop-blur-sm">
+          <i className="fa-solid fa-gift text-white text-4xl" />
         </div>
 
         {/* Title */}
-        <h2 className="text-2xl md:text-3xl font-bold text-slate-900 mb-4 break-keep leading-snug">
+        <h2 className="text-4xl md:text-6xl font-black text-white mb-6 leading-tight break-keep">
           {section.title}
         </h2>
 
         {/* Content */}
-        <p className="text-slate-600 leading-relaxed mb-8">
+        <p className="text-xl text-white/80 leading-relaxed mb-10">
           {section.content}
         </p>
 
         {/* Benefits Summary */}
         {section.subContent && section.subContent.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-2 mb-8">
+          <div className="flex flex-wrap justify-center gap-3 mb-10">
             {section.subContent.map((item, idx) => (
               <span
                 key={idx}
-                className="px-4 py-2 bg-white rounded-full text-sm font-medium text-slate-600 border border-slate-200"
+                className="px-5 py-3 bg-white/20 backdrop-blur-sm rounded-full text-white font-semibold border border-white/30"
               >
-                <i className="fa-solid fa-check text-emerald-500 mr-2 text-xs" />
+                <i className="fa-solid fa-check mr-2" />
                 {item}
               </span>
             ))}
@@ -427,17 +479,16 @@ const SectionItem: React.FC<SectionItemProps> = ({
         )}
 
         {/* CTA Button */}
-        <button
-          className="w-full max-w-sm px-8 py-5 text-white font-bold text-lg rounded-2xl transition-all hover:brightness-110 active:scale-[0.98] shadow-xl"
-          style={{ backgroundColor: primaryColor }}
+        <button className="w-full max-w-md px-10 py-6 bg-white text-lg font-black rounded-2xl transition-all hover:scale-[1.02] active:scale-[0.98] shadow-2xl"
+          style={{ color: primaryColor }}
         >
-          지금 바로 시작하기
+          지금 바로 구매하기
           <i className="fa-solid fa-arrow-right ml-3" />
         </button>
 
         {/* Sub Text */}
-        <p className="text-xs text-slate-400 mt-4">
-          지금 구매 시 특별 혜택 제공
+        <p className="text-white/60 mt-6 text-sm font-medium">
+          ✨ 오늘 주문 시 무료배송 + 특별 할인
         </p>
       </div>
     </div>
@@ -498,51 +549,60 @@ const SectionItem: React.FC<SectionItemProps> = ({
     );
   };
 
-  // 리뷰 섹션 렌더링 (신규)
+  // 리뷰 섹션 렌더링 (나노바나나 스타일)
   const renderReviews = () => (
-    <div className="py-16 px-4 bg-gradient-to-b from-slate-50 to-white">
-      <div className="max-w-lg mx-auto">
+    <div className="bg-black py-20 px-6">
+      <div className="max-w-2xl mx-auto">
         {/* Section Label */}
-        <div className="flex items-center justify-center gap-2 mb-6">
-          <span className="w-8 h-[2px]" style={{ backgroundColor: secondaryColor }} />
+        <div className="text-center mb-12">
+          <div className="flex items-center justify-center gap-1 mb-4">
+            {[1, 2, 3, 4, 5].map((star) => (
+              <i key={star} className="fa-solid fa-star text-amber-400 text-xl" />
+            ))}
+          </div>
           <span
-            className="text-xs font-bold uppercase tracking-widest"
-            style={{ color: primaryColor }}
+            className="inline-block px-5 py-2 rounded-full text-sm font-bold tracking-wide mb-6"
+            style={{ backgroundColor: `${primaryColor}20`, color: primaryColor }}
           >
-            Reviews
+            REAL REVIEWS
           </span>
-          <span className="w-8 h-[2px]" style={{ backgroundColor: secondaryColor }} />
+          <h2 className="text-3xl md:text-5xl font-black text-white leading-tight break-keep">
+            {section.title}
+          </h2>
         </div>
 
-        {/* Title */}
-        <h2 className="text-2xl md:text-3xl font-bold text-slate-900 text-center mb-8 break-keep leading-snug">
-          {section.title}
-        </h2>
-
-        {/* Reviews */}
+        {/* Reviews - Big Cards */}
         {section.subContent && section.subContent.length > 0 && (
-          <div className="space-y-4">
+          <div className="space-y-6">
             {section.subContent.map((review, idx) => (
               <div
                 key={idx}
-                className="bg-white rounded-2xl p-5 border border-slate-100 shadow-sm"
+                className="bg-slate-900 rounded-3xl p-6 border border-slate-800"
               >
-                <div className="flex items-center gap-1 mb-3">
+                <div className="flex items-center gap-1 mb-4">
                   {[1, 2, 3, 4, 5].map((star) => (
                     <i key={star} className="fa-solid fa-star text-amber-400 text-sm" />
                   ))}
                 </div>
-                <p className="text-slate-600 text-sm leading-relaxed italic">
+                <p className="text-white text-lg leading-relaxed mb-4">
                   "{review}"
                 </p>
-                <div className="flex items-center gap-2 mt-3 pt-3 border-t border-slate-100">
+                <div className="flex items-center gap-3 pt-4 border-t border-slate-800">
                   <div
-                    className="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
+                    className="w-12 h-12 rounded-full flex items-center justify-center text-white text-lg font-bold"
                     style={{ backgroundColor: primaryColor }}
                   >
                     {String.fromCharCode(65 + idx)}
                   </div>
-                  <span className="text-xs text-slate-400">실제 구매자</span>
+                  <div>
+                    <p className="text-white font-semibold">구매자 {String.fromCharCode(65 + idx)}</p>
+                    <p className="text-slate-500 text-sm">실제 구매 후기</p>
+                  </div>
+                  <div className="ml-auto">
+                    <span className="px-3 py-1 bg-emerald-500/20 text-emerald-400 text-xs font-bold rounded-full">
+                      인증됨
+                    </span>
+                  </div>
                 </div>
               </div>
             ))}
@@ -550,35 +610,40 @@ const SectionItem: React.FC<SectionItemProps> = ({
         )}
 
         {/* Content */}
-        <p className="text-slate-500 text-sm text-center mt-6">
+        <p className="text-slate-400 text-center mt-10 text-lg">
           {section.content}
         </p>
       </div>
     </div>
   );
 
-  // 기본 렌더링 (알 수 없는 타입용)
+  // 기본 렌더링 (알 수 없는 타입용) - 나노바나나 스타일
   const renderDefault = () => (
-    <div className="py-16 px-4">
-      <div className="max-w-lg mx-auto">
-        <h2 className="text-2xl font-bold text-slate-900 text-center mb-6">
+    <div className="bg-slate-900 py-20 px-6">
+      <div className="max-w-2xl mx-auto">
+        <h2 className="text-3xl md:text-4xl font-black text-white text-center mb-8">
           {section.title}
         </h2>
-        <p className="text-slate-600 text-center mb-6">
+        <p className="text-slate-400 text-center text-lg mb-10">
           {section.content}
         </p>
         {section.subContent && (
-          <ul className="space-y-3">
+          <div className="space-y-4">
             {section.subContent.map((item, idx) => (
-              <li key={idx} className="flex items-start gap-3">
-                <i className="fa-solid fa-circle-check mt-1" style={{ color: primaryColor }} />
-                <span className="text-slate-700">{item}</span>
-              </li>
+              <div key={idx} className="flex items-start gap-4 p-4 bg-slate-800/50 rounded-2xl">
+                <div
+                  className="w-8 h-8 rounded-full flex items-center justify-center shrink-0"
+                  style={{ backgroundColor: `${primaryColor}20` }}
+                >
+                  <i className="fa-solid fa-circle-check" style={{ color: primaryColor }} />
+                </div>
+                <span className="text-white font-medium">{item}</span>
+              </div>
             ))}
-          </ul>
+          </div>
         )}
-        <div className="mt-8">
-          {renderImage()}
+        <div className="mt-10">
+          {renderImage('aspect-[16/10]', 'rounded-3xl')}
         </div>
       </div>
     </div>
