@@ -528,52 +528,36 @@ export const generateSectionImage = async (
   baseImage?: string,
   isDailyLife: boolean = false
 ): Promise<string> => {
-  const ai = new GoogleGenAI({ apiKey: API_KEY });
+  // API 키 검증
+  validateApiKey();
 
-  // 목적에 맞는 키워드가 자동 추가된 프롬프트 생성
-  const enhancedPrompt = buildImagePrompt(prompt, sectionType, isDailyLife);
+  try {
+    const ai = new GoogleGenAI({ apiKey: API_KEY });
 
-  const contents: any = {
-    parts: []
-  };
+    // 목적에 맞는 키워드가 자동 추가된 프롬프트 생성
+    const enhancedPrompt = buildImagePrompt(prompt, sectionType, isDailyLife);
 
-  if (baseImage) {
-    contents.parts.push({
-      inlineData: {
-        data: baseImage.split(',')[1],
-        mimeType: 'image/png'
+    // Imagen 3 모델을 사용하여 이미지 생성
+    const response = await ai.models.generateImages({
+      model: 'imagen-3.0-generate-002',
+      prompt: enhancedPrompt,
+      config: {
+        numberOfImages: 1,
+        aspectRatio: '16:9'
       }
     });
-    contents.parts.push({
-      text: `Maintain the exact product from the image. Place it in this new environment: ${enhancedPrompt}. Hyper-realistic product photography with wellness/fitness atmosphere.`
-    });
-  } else {
-    contents.parts.push({
-      text: enhancedPrompt
-    });
-  }
 
-  const response = await ai.models.generateContent({
-    model: 'gemini-2.0-flash',
-    contents,
-    config: {
-      responseModalities: ["image", "text"],
-      imageConfig: {
-        aspectRatio: "16:9"
-      }
+    // 생성된 이미지 추출
+    const generatedImages = response.generatedImages;
+    if (generatedImages && generatedImages.length > 0 && generatedImages[0].image?.imageBytes) {
+      return `data:image/png;base64,${generatedImages[0].image.imageBytes}`;
     }
-  });
 
-  let imageUrl = '';
-  for (const part of response.candidates?.[0]?.content?.parts || []) {
-    if (part.inlineData) {
-      imageUrl = `data:image/png;base64,${part.inlineData.data}`;
-      break;
-    }
+    throw new Error("이미지 생성 결과가 없습니다");
+  } catch (error: any) {
+    console.error('generateSectionImage error:', error);
+    throw new Error(extractErrorMessage(error));
   }
-
-  if (!imageUrl) throw new Error("Image generation failed");
-  return imageUrl;
 };
 
 // ═══════════════════════════════════════════════════════════════
