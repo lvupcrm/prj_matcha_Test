@@ -293,7 +293,7 @@ export const generateDetailPageContent = async (info: ProductInfo): Promise<Deta
   }
 
   const response = await ai.models.generateContent({
-    model: 'gemini-2.5-pro-preview-06-05',
+    model: 'gemini-2.0-flash',
     contents: prompt,
     config: {
       systemInstruction: systemInstruction,
@@ -530,7 +530,7 @@ export const generateSectionImage = async (
   }
 
   const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash-preview-05-20',
+    model: 'gemini-2.0-flash',
     contents,
     config: {
       responseModalities: ["image", "text"],
@@ -596,7 +596,7 @@ export const generateAutoContent = async (
 `;
 
   const response = await ai.models.generateContent({
-    model: 'gemini-2.5-pro-preview-06-05',
+    model: 'gemini-2.0-flash',
     contents: prompt,
     config: {
       responseMimeType: "application/json",
@@ -699,7 +699,7 @@ ${isDailyLife ? '생활용품에 어울리는 깔끔하고 신뢰감 있는 색�
 `;
 
   const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash-preview-05-20',
+    model: 'gemini-2.0-flash',
     contents: prompt,
     config: {
       responseMimeType: "application/json",
@@ -799,7 +799,7 @@ ${basicSections.map((s, i) => `
 `;
 
   const basicResponse = await ai.models.generateContent({
-    model: 'gemini-2.5-pro-preview-06-05',
+    model: 'gemini-2.0-flash',
     contents: basicPrompt,
     config: {
       systemInstruction,
@@ -924,7 +924,7 @@ High quality, 8K resolution, professional product photography.`
   };
 
   const response = await ai.models.generateContent({
-    model: 'gemini-2.5-flash-preview-05-20',
+    model: 'gemini-2.0-flash',
     contents,
     config: {
       responseModalities: ["image", "text"],
