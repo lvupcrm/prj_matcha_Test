@@ -14,6 +14,30 @@ import {
 
 const API_KEY = process.env.API_KEY || '';
 
+// API 키 유효성 검사 함수
+const validateApiKey = () => {
+  if (!API_KEY || API_KEY === '' || API_KEY === 'PLACEHOLDER_API_KEY') {
+    throw new Error('API 키가 설정되지 않았습니다. 환경 변수를 확인해주세요.');
+  }
+};
+
+// 에러 메시지 추출 함수
+const extractErrorMessage = (error: any): string => {
+  if (error?.message) {
+    if (error.message.includes('429') || error.message.includes('quota')) {
+      return 'API 사용량 한도를 초과했습니다. 잠시 후 다시 시도해주세요.';
+    }
+    if (error.message.includes('401') || error.message.includes('403')) {
+      return 'API 키가 유효하지 않습니다.';
+    }
+    if (error.message.includes('404')) {
+      return '요청한 모델을 찾을 수 없습니다. 모델명을 확인해주세요.';
+    }
+    return error.message;
+  }
+  return '알 수 없는 오류가 발생했습니다.';
+};
+
 // 제품 목적별 한글 라벨
 const purposeLabels: Record<WellnessGoal, string> = {
   'weight-loss': '다이어트/체중감량',
@@ -667,8 +691,12 @@ export const generateAutoContent = async (
  * 1단계: 초안 아웃라인 생성 (빠른 응답)
  */
 export const generateDraftOutline = async (info: ProductInfo): Promise<DraftPageData> => {
-  const ai = new GoogleGenAI({ apiKey: API_KEY });
-  const isDailyLife = info.wellnessData?.goal === 'daily-life';
+  // API 키 검증
+  validateApiKey();
+
+  try {
+    const ai = new GoogleGenAI({ apiKey: API_KEY });
+    const isDailyLife = info.wellnessData?.goal === 'daily-life';
   const purposeLabel = info.wellnessData ? purposeLabels[info.wellnessData.goal] : '일반';
 
   const prompt = `
@@ -733,26 +761,30 @@ ${isDailyLife ? '생활용품에 어울리는 깔끔하고 신뢰감 있는 색�
     }
   });
 
-  const result = JSON.parse(response.text ?? '{}');
+    const result = JSON.parse(response.text ?? '{}');
 
-  // 섹션이 없거나 빈 배열이면 기본 섹션 생성
-  if (!result.sections || result.sections.length === 0) {
-    result.sections = [
-      { type: 'hero', title: '후킹 헤드라인', outline: '고객의 관심을 끄는 강렬한 첫인상', isApproved: true },
-      { type: 'problem', title: '문제 인식', outline: '고객이 겪는 불편함과 고민 공감', isApproved: true },
-      { type: 'solution', title: '해결책 제시', outline: '제품이 제공하는 핵심 해결책', isApproved: true },
-      { type: 'features', title: '제품 특징', outline: '주요 기능과 차별화 포인트', isApproved: true },
-      { type: 'trust', title: '신뢰 구축', outline: '인증, 리뷰, 전문가 추천 등', isApproved: true },
-      { type: 'cta', title: '행동 촉구', outline: '지금 구매해야 하는 이유', isApproved: true }
-    ];
+    // 섹션이 없거나 빈 배열이면 기본 섹션 생성
+    if (!result.sections || result.sections.length === 0) {
+      result.sections = [
+        { type: 'hero', title: '후킹 헤드라인', outline: '고객의 관심을 끄는 강렬한 첫인상', isApproved: true },
+        { type: 'problem', title: '문제 인식', outline: '고객이 겪는 불편함과 고민 공감', isApproved: true },
+        { type: 'solution', title: '해결책 제시', outline: '제품이 제공하는 핵심 해결책', isApproved: true },
+        { type: 'features', title: '제품 특징', outline: '주요 기능과 차별화 포인트', isApproved: true },
+        { type: 'trust', title: '신뢰 구축', outline: '인증, 리뷰, 전문가 추천 등', isApproved: true },
+        { type: 'cta', title: '행동 촉구', outline: '지금 구매해야 하는 이유', isApproved: true }
+      ];
+    }
+
+    // suggestedColors가 없으면 기본값 설정
+    if (!result.suggestedColors) {
+      result.suggestedColors = { primary: '#4CAF50', secondary: '#81C784' };
+    }
+
+    return result;
+  } catch (error: any) {
+    console.error('generateDraftOutline error:', error);
+    throw new Error(extractErrorMessage(error));
   }
-
-  // suggestedColors가 없으면 기본값 설정
-  if (!result.suggestedColors) {
-    result.suggestedColors = { primary: '#4CAF50', secondary: '#81C784' };
-  }
-
-  return result;
 };
 
 /**
