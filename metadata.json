@@ -1,0 +1,7 @@
+{
+  "name": "NanoDetail AI - Smart Product Page Builder",
+  "description": "An AI-powered application that generates high-converting e-commerce product detail pages including copywriting and lifestyle imagery using Gemini models.",
+  "requestFramePermissions": [
+    "camera"
+  ]
+}
