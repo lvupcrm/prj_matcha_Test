@@ -20,15 +20,37 @@ const editorReducer = (state: EditorState, action: EditorAction): EditorState =>
       return { ...state, selectedBlockId: action.payload };
 
     case 'UPDATE_BLOCK':
-      return {
-        ...state,
-        blocks: state.blocks.map(block =>
-          block.id === action.payload.id
-            ? { ...block, style: { ...block.style, ...action.payload.style } }
-            : block
-        ),
-        isDirty: true
-      };
+      const existingBlock = state.blocks.find(b => b.id === action.payload.id);
+      if (existingBlock) {
+        return {
+          ...state,
+          blocks: state.blocks.map(block =>
+            block.id === action.payload.id
+              ? { ...block, style: { ...block.style, ...action.payload.style } }
+              : block
+          ),
+          isDirty: true
+        };
+      } else {
+        // 블록이 없으면 새로 생성
+        const newBlock: EditableBlock = {
+          id: action.payload.id,
+          sectionIndex: state.blocks.length,
+          style: {
+            height: 'auto',
+            backgroundColor: '#ffffff',
+            padding: 'medium',
+            ...action.payload.style
+          },
+          isSelected: false,
+          isLocked: false
+        };
+        return {
+          ...state,
+          blocks: [...state.blocks, newBlock],
+          isDirty: true
+        };
+      }
 
     case 'REORDER_BLOCKS':
       const reorderedBlocks = action.payload.map((id, index) => {

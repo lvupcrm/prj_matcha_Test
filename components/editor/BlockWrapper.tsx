@@ -1,4 +1,4 @@
-import React, { ReactNode } from 'react';
+import React, { ReactNode, useEffect } from 'react';
 import { BlockHeight, BlockPadding } from '../../types';
 import { useEditor } from './EditorProvider';
 
@@ -25,10 +25,27 @@ const paddingMap: Record<BlockPadding, string> = {
   large: 'p-8'
 };
 
+// 기본 스타일
+const defaultStyle = {
+  height: 'auto' as BlockHeight,
+  backgroundColor: '#ffffff',
+  padding: 'medium' as BlockPadding
+};
+
 const BlockWrapper: React.FC<BlockWrapperProps> = ({ id, children, backgroundColor }) => {
   const { state, selectBlock, updateBlockStyle, isEditMode } = useEditor();
   const block = state.blocks.find(b => b.id === id);
   const isSelected = state.selectedBlockId === id;
+
+  // 블록이 없으면 자동 생성
+  useEffect(() => {
+    if (!block) {
+      updateBlockStyle(id, { backgroundColor: backgroundColor || '#ffffff' });
+    }
+  }, [id, block, updateBlockStyle, backgroundColor]);
+
+  // 현재 스타일 (블록이 없으면 기본값 사용)
+  const currentStyle = block?.style || defaultStyle;
 
   const handleClick = (e: React.MouseEvent) => {
     if (!isEditMode) return;
@@ -58,7 +75,7 @@ const BlockWrapper: React.FC<BlockWrapperProps> = ({ id, children, backgroundCol
         isSelected ? 'ring-2 ring-indigo-500 ring-offset-2' : ''
       }`}
       onClick={handleClick}
-      style={{ backgroundColor: block?.style.backgroundColor || backgroundColor || '#ffffff' }}
+      style={{ backgroundColor: currentStyle.backgroundColor || backgroundColor || '#ffffff' }}
     >
       {/* 드래그 핸들 */}
       <div
@@ -83,7 +100,7 @@ const BlockWrapper: React.FC<BlockWrapperProps> = ({ id, children, backgroundCol
                   key={h}
                   onClick={(e) => { e.stopPropagation(); handleHeightChange(h); }}
                   className={`w-7 h-7 rounded-md text-xs font-medium transition-colors ${
-                    block?.style.height === h
+                    currentStyle.height === h
                       ? 'bg-indigo-100 text-indigo-600'
                       : 'hover:bg-slate-100 text-slate-500'
                   }`}
@@ -102,7 +119,7 @@ const BlockWrapper: React.FC<BlockWrapperProps> = ({ id, children, backgroundCol
                   key={p}
                   onClick={(e) => { e.stopPropagation(); handlePaddingChange(p); }}
                   className={`w-7 h-7 rounded-md text-xs font-medium transition-colors ${
-                    block?.style.padding === p
+                    currentStyle.padding === p
                       ? 'bg-indigo-100 text-indigo-600'
                       : 'hover:bg-slate-100 text-slate-500'
                   }`}
@@ -121,7 +138,7 @@ const BlockWrapper: React.FC<BlockWrapperProps> = ({ id, children, backgroundCol
                   key={color}
                   onClick={(e) => { e.stopPropagation(); handleBackgroundChange(color); }}
                   className={`w-6 h-6 rounded-md border-2 transition-all ${
-                    block?.style.backgroundColor === color
+                    currentStyle.backgroundColor === color
                       ? 'border-indigo-500 scale-110'
                       : 'border-slate-200 hover:border-slate-300'
                   }`}
@@ -144,7 +161,7 @@ const BlockWrapper: React.FC<BlockWrapperProps> = ({ id, children, backgroundCol
       </div>
 
       {/* 컨텐츠 */}
-      <div className={`${heightMap[block?.style.height || 'auto']} ${paddingMap[block?.style.padding || 'medium']}`}>
+      <div className={`${heightMap[currentStyle.height]} ${paddingMap[currentStyle.padding]}`}>
         {children}
       </div>
     </div>
